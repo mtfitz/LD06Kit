@@ -7,8 +7,6 @@ LDFLAGS =
 
 SOURCES_FMT = $(patsubst %, src/%.cpp, $(SOURCES))
 
-
-
 all:
 	mkdir -p bin/
 	$(CXX) $(SOURCES_FMT) $(CXXFLAGS) $(LDFLAGS) -o bin/$(TARGET)

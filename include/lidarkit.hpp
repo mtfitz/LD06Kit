@@ -11,8 +11,8 @@ const size_t NUM_POINTS = 12;
 
 class LidarKit {
 private:
-    std::string dev_uri;
     int fd;
+    std::string dev_uri;
     std::atomic<bool> is_running;
     std::thread dev_thread;
 
@@ -22,6 +22,7 @@ private:
 
 public:
     LidarKit(std::string dev_uri);
+    ~LidarKit();
     void start();
     void stop();
 };
