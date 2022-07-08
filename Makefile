@@ -7,6 +7,14 @@ LDFLAGS =
 
 SOURCES_FMT = $(patsubst %, src/%.cpp, $(SOURCES))
 
+ifeq ($(OS),Windows_NT)
+else
+	ifeq ($(shell uname), Darwin)
+	else
+		CXXFLAGS += -pthread
+	endif
+endif
+
 all:
 	mkdir -p bin/
 	$(CXX) $(SOURCES_FMT) $(CXXFLAGS) $(LDFLAGS) -o bin/$(TARGET)
