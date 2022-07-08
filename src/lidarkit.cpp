@@ -89,12 +89,18 @@ void LidarKit::close_device()
     close(this->fd);
 }
 
+void LidarKit::reset_device()
+{
+    tcflush(this->fd, TCIOFLUSH);
+}
+
 void LidarKit::thread_loop()
 {
     using namespace std;
 
     vector<uint8_t> packet(PACKET_LEN, 0);
 
+    this->reset_device();
     while (this->is_running) {
         ssize_t n;
         // check first byte (magic number)

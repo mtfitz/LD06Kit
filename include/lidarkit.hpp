@@ -18,6 +18,7 @@ private:
 
     void open_device();
     void close_device();
+    void reset_device();
     void thread_loop();
 
 public:
