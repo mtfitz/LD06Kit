@@ -2,7 +2,7 @@ TARGET = lidar
 SOURCES = lidartest lidarkit util
 
 INCDIR = include
-CXXFLAGS = -I$(INCDIR) -g -std=c++17
+CXXFLAGS = -I$(INCDIR) -O3 -std=c++17
 LDFLAGS = 
 
 SOURCES_FMT = $(patsubst %, src/%.cpp, $(SOURCES))

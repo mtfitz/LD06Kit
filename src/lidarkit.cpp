@@ -10,6 +10,8 @@
 #include <unistd.h>
 #include <vector>
 
+using namespace std;
+
 const uint8_t crc_table[256] =
 {
     0x00, 0x4d, 0x9a, 0xd7, 0x79, 0x34, 0xe3,
@@ -96,8 +98,6 @@ void LidarKit::reset_device()
 
 void LidarKit::thread_loop()
 {
-    using namespace std;
-
     vector<uint8_t> packet(PACKET_LEN, 0);
 
     this->reset_device();
@@ -120,6 +120,7 @@ void LidarKit::thread_loop()
 
         if(calc_crc8(packet.data(), 46) != packet[46]) {
             logger("Bad checksum, skipping...");
+            logger("(first point confidence: " + std::to_string(packet[8]) + ")");
             continue;
         }
 
@@ -156,19 +157,24 @@ void LidarKit::thread_loop()
             double this_angle = start_angle + i*step;
 
             LidarPoint p(this_angle, this_dist, this_conf, timestamp);
-            cout << p << endl;
+            lock_guard lg(points_mtx);
+            this->points.push_back(p);
         }
     }
 }
 
-void LidarKit::start()
+bool LidarKit::start()
 {
-    if (!this->is_running) {
-        this->is_running = true;
-        this->dev_thread = std::thread([this]() {
-            thread_loop();
-        });
+    if (this->is_running) {
+        return false;
     }
+
+    this->is_running = true;
+    this->dev_thread = std::thread([this]() {
+        thread_loop();
+    });
+
+    return true;
 }
 
 void LidarKit::stop()
@@ -177,4 +183,11 @@ void LidarKit::stop()
         this->is_running = false;
         this->dev_thread.join();
     }
+}
+
+vector<LidarPoint> LidarKit::get_points()
+{
+    lock_guard lg(points_mtx);
+
+    return move(this->points);
 }

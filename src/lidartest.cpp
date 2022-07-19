@@ -1,24 +1,34 @@
 #include <chrono>
 #include <iostream>
 #include <optional>
+#include <signal.h>
 #include <thread>
 #include <vector>
 
 #include "lidarkit.hpp"
 
-#ifdef __APPLE__
-const std::string DEFAULT_DEVICE_URI = "/dev/tty.usbserial-0001";
-#else
-const std::string DEFAULT_DEVICE_URI = "/dev/ttyUSB0";
-#endif
+static bool is_running = true;
 
-int main()
+using namespace std;
+
+void sigint_handler(int)
 {
-    using namespace std;
+    is_running = false;
+    cout << "Done." << endl;
+}
+
+int main(int argc, char** argv)
+{
+    // register signal handler, for CTRL+C interrupt
+    signal(SIGINT, sigint_handler);
 
     LidarKit lk(DEFAULT_DEVICE_URI);
     lk.start();
-    this_thread::sleep_for(5s);
+    while (is_running) {
+        auto v = lk.get_points();
+        cout << "Size: " << v.size() << endl;
+        this_thread::sleep_for(0.2s);
+    }
     lk.stop();
 
     return 0;
