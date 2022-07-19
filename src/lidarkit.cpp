@@ -113,7 +113,7 @@ void LidarKit::thread_loop()
         ssize_t bytes_got = 1;
         while (this->is_running && bytes_got < PACKET_LEN) {
             n = read(this->fd, packet.data() + bytes_got, PACKET_LEN - bytes_got);
-            if (n == -1) logger("Error: " + to_string(errno));
+            if (n == -1) logger("Input error: " + to_string(errno));
             if (n == 0 || n == -1) continue;
             bytes_got += n;
         }

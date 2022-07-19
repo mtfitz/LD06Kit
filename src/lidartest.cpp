@@ -36,7 +36,7 @@ int main(int argc, char** argv)
         }
         lk.stop();
     } catch (exception& e) {
-        
+        cout << "Fatal error!" << endl;
     }
 
     return 0;
