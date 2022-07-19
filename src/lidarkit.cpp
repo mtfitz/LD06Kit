@@ -1,4 +1,4 @@
-#include "lidarkit.hpp"
+#include "LD06Kit/lidarkit.hpp"
 
 #include <errno.h>
 #include <exception>
@@ -125,8 +125,8 @@ void LidarKit::thread_loop()
         }
 
         // read bytes, convert to words
-        uint16_t radar_speed_word   = static_cast<uint16_t>(packet[2]) 
-                                    + (static_cast<uint16_t>(packet[3])<<8);
+        //uint16_t radar_speed_word   = static_cast<uint16_t>(packet[2]) 
+        //                            + (static_cast<uint16_t>(packet[3])<<8);
         uint16_t start_angle_word   = static_cast<uint16_t>(packet[4]) 
                                     + (static_cast<uint16_t>(packet[5])<<8);
         uint16_t end_angle_word     = static_cast<uint16_t>(packet[42]) 
@@ -135,7 +135,7 @@ void LidarKit::thread_loop()
                                     + (static_cast<uint16_t>(packet[45])<<8);
 
         // fix types, properly convert units
-        int radar_speed = radar_speed_word;
+        //int radar_speed = radar_speed_word;
         double start_angle = start_angle_word / 100.0;
         double end_angle = end_angle_word / 100.0;
         int timestamp = timestamp_word;
