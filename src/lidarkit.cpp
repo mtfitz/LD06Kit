@@ -110,7 +110,7 @@ void LidarKit::thread_loop()
             if (packet[0] == 0x54) break;
         }
         // get remaining bytes
-        ssize_t bytes_got = 1;
+        size_t bytes_got = 1;
         while (this->is_running && bytes_got < PACKET_LEN) {
             n = read(this->fd, packet.data() + bytes_got, PACKET_LEN - bytes_got);
             if (n == -1) logger("Input error: " + to_string(errno));
@@ -146,8 +146,8 @@ void LidarKit::thread_loop()
                     : ((end_angle + 360.0) - start_angle) / (NUM_POINTS - 1);
         
         // parse intermediate points
-        for (int i = 0; i < NUM_POINTS; i++) {
-            int j = 6 + 3*i;
+        for (size_t i = 0; i < NUM_POINTS; i++) {
+            size_t j = 6 + 3*i;
 
             uint16_t this_dist_word = static_cast<uint16_t>(packet[j])
                                     + (static_cast<uint16_t>(packet[j+1])<<8);
