@@ -31,8 +31,8 @@ all: lib/$(LIB_TARGET).a
 	@echo "Linking static library..."
 	@$(CXX) $(LIB_TARGETS_FMT) $(CXXFLAGS) $(LIB_LDFLAGS) -shared -o lib/lib$(LIB_TARGET).a
 
-	@echo "Linking dynamic library..."
-	@$(CXX) $(LIB_TARGETS_FMT) $(CXXFLAGS) $(LIB_LDFLAGS) -dynamiclib -o lib/lib$(LIB_TARGET).dylib
+	@echo "(UNIMPLEMENTED) Linking dynamic library..."
+	#@$(CXX) $(LIB_TARGETS_FMT) $(CXXFLAGS) $(LIB_LDFLAGS) -dynamiclib -o lib/lib$(LIB_TARGET).dylib
 
 	@echo "Compiling executable..."
 	@$(CXX) $(EXE_SOURCES_FMT) $(CXXFLAGS) $(EXE_LDFLAGS) -o bin/$(EXE_TARGET)
