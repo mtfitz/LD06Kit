@@ -68,8 +68,8 @@ void LidarKit::open_device()
     if (this->fd == -1) {
         logger("Unable to open " + dev_uri);
     } else {
-        fcntl(this->fd, F_SETFL, 0);
-        //fcntl(this->fd, F_SETFL, FNDELAY);
+        //fcntl(this->fd, F_SETFL, 0);
+        fcntl(this->fd, F_SETFL, FNDELAY); // non-blocking mode (important for timeout)
 
         termios options;
         tcgetattr(this->fd, &options);
@@ -80,8 +80,9 @@ void LidarKit::open_device()
         options.c_cflag &= ~PARENB; // no parity bit
         options.c_cflag &= ~CSTOPB; // 1 stop bit
         options.c_cflag |= CS8; // 8-bit chars
-        //options.c_cc[VMIN] = 1;
-        options.c_cc[VTIME] = 10; // 1s timeout
+        options.c_cc[VMIN] = 0; // timer begins immediately
+        options.c_cc[VTIME] = 1; // 100ms timeout
+        options.c_lflag &= ~ICANON; // non-canonical mode (important for timeout)
         tcsetattr(this->fd, TCSANOW, &options);
     }
 }
@@ -157,7 +158,7 @@ void LidarKit::thread_loop()
             double this_angle = start_angle + i*step;
 
             LidarPoint p(this_angle, this_dist, this_conf, timestamp);
-            lock_guard lg(points_mtx);
+            scoped_lock lg(points_mtx);
             this->points.push_back(p);
         }
     }
@@ -187,7 +188,7 @@ void LidarKit::stop()
 
 vector<LidarPoint> LidarKit::get_points()
 {
-    lock_guard lg(points_mtx);
+    scoped_lock lg(points_mtx);
 
     return move(this->points);
 }
