@@ -6,9 +6,9 @@ ext_modules = [
     Pybind11Extension(
         "ld06kit",
         sources = ["src/pybind11_wrapper.cpp"],
-        library_dirs = ["lib"],
+        library_dirs = ["/usr/local/lib"],
         libraries = ["ld06kit"],
-        include_dirs = ["include"],
+        include_dirs = ["/usr/local/include"],
         extra_compile_args=["-std=c++17"],
     ),
 ]
