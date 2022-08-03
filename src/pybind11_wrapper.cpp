@@ -16,7 +16,7 @@ PYBIND11_MODULE(ld06kit, m)
         .def_readwrite("timestamp", &LidarPoint::timestamp);
 
     py::class_<LidarKit>(m, "LidarKit")
-        .def(py::init<const std::string&>())
+      .def(py::init<const std::string&, bool>(), py::arg("uri"), py::arg("debug_mode") = false)
         .def("start", &LidarKit::start)
         .def("stop", &LidarKit::stop)
         .def("get_points", &LidarKit::get_points);

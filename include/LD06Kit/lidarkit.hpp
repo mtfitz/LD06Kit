@@ -21,6 +21,7 @@ class LidarKit {
 private:
     int fd;
     std::string dev_uri;
+    bool debug_mode;
     std::atomic<bool> is_running;
     std::thread dev_thread;
     std::vector<LidarPoint> points;
@@ -37,7 +38,7 @@ public:
     /// Creates an state and configuration structure for the lidar device.
     /// @param dev_uri the path of the serial-connected lidar device (e.g. "/dev/ttyUSB0")
     ///
-    LidarKit(std::string dev_uri);
+    LidarKit(std::string dev_uri, bool debug_mode = false);
 
     ///
     /// Safely destroys the state structrure.

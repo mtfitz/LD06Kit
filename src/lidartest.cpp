@@ -35,6 +35,8 @@ int main(int argc, char** argv)
             this_thread::sleep_for(0.5s);
         }
         lk.stop();
+	auto v = lk.get_points();
+        for (auto& p : v) cout << p << endl;
     } catch (exception& e) {
         cout << "Fatal error!" << endl;
     }

@@ -49,7 +49,7 @@ uint8_t calc_crc8(uint8_t *p, uint8_t len)
     return crc;
 }
 
-LidarKit::LidarKit(std::string dev_uri) : dev_uri(dev_uri), is_running(false)
+LidarKit::LidarKit(std::string dev_uri, bool debug_mode) : dev_uri(dev_uri), debug_mode(debug_mode), is_running(false)
 {
     this->open_device();
     if (this->fd == -1) throw std::exception();
@@ -64,7 +64,7 @@ LidarKit::~LidarKit()
 void LidarKit::open_device()
 {
     // open device file descriptor
-    this->fd = open(dev_uri.c_str(), O_RDONLY | O_NOCTTY | O_NDELAY);
+    this->fd = open(dev_uri.c_str(), O_RDONLY | O_NOCTTY);
     if (this->fd == -1) {
         logger("Unable to open " + dev_uri);
     } else {
@@ -114,14 +114,16 @@ void LidarKit::thread_loop()
         size_t bytes_got = 1;
         while (this->is_running && bytes_got < PACKET_LEN) {
             n = read(this->fd, packet.data() + bytes_got, PACKET_LEN - bytes_got);
-            if (n == -1) logger("Input error: " + to_string(errno));
+            if (n == -1 && errno != 11) logger("Input error: " + to_string(errno));
             if (n == 0 || n == -1) continue;
             bytes_got += n;
         }
 
         if(calc_crc8(packet.data(), 46) != packet[46]) {
-            logger("Bad checksum, skipping...");
-            logger("(first point confidence: " + std::to_string(packet[8]) + ")");
+	    if (this->debug_mode) {
+	        logger("Bad checksum, skipping...");
+	        logger("(first point confidence: " + std::to_string(packet[8]) + ")");
+	    }
             continue;
         }
 
